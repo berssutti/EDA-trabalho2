@@ -3,6 +3,8 @@
 
 int main(){
     int option;
+    char getFileLenght[20];
+    char *fileName;
     do{
         printf("*** MENU ***\n"
         "1- Gerar ABP\n"
@@ -14,7 +16,12 @@ int main(){
         scanf("%d",&option);
         switch (option){
         case 1:
-            /* code */
+            Printf("Digite o nome do arquiavo: \n");
+            scanf("%s", getFileLenght);
+            fileName = (char *) malloc(sizeof(getFileLenght));
+            fileName = getFileLenght;
+
+            
             break;  
         case 2:
             /* code */
