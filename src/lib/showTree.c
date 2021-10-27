@@ -1,19 +1,15 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
+#include "../include/libgroup01.h"
 
 int getHeight(BinaryTree *root);
 int saveTree(BinaryTree *root, int is_left, int offset, int depth, char **s);
 void showTree(BinaryTree *root);
 
-int main() {
-    
-    showTree(root);
-
-    return 0;
-}
-
 int getHeight(BinaryTree *root) {
   if(root == NULL) {
+    printf("root está vazio");
     return 0;
   }
   int leftHeight = getHeight(root->left); // endereco do no da esquerda
@@ -61,10 +57,12 @@ int saveTree(BinaryTree *root, int is_left, int offset, int depth, char **s) {
 
 void showTree(BinaryTree *root) {
   int height = getHeight(root);
+  printf("height: %d", height);
   int tam = ((height * 2) + 1);
 
   char **show = (char **)malloc( tam * sizeof(char *));
 	for (int i = 0; i < tam; i++) {
+    printf("printando keys");
 		show[i] = (char *)malloc(255 * sizeof(char));
 		sprintf(show[i], "%80s", " ");
 	}

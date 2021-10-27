@@ -1,12 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include "libgroup01.h"
 
-typedef struct node {
-int info;
-struct node *left;
-struct node *right;
-} BinaryTree;
-
+///ROOT NÃO ESTÁ SENDO ATUALIZADO DPS DO CREATE, ARRUMAR.
 
 int main(){
     int option;
@@ -28,7 +24,7 @@ int main(){
            // scanf("%s", getFileLenght);
            // fileName = (char *) malloc(sizeof(getFileLenght));
            // fileName = getFileLenght;
-           createTree(root);
+            createTree(root);
             break;  
         case 2:
             /* code */

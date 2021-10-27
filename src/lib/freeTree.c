@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include "../include/libgroup01.h"
 
 void freeBinaryTree(BinaryTree *root);
 

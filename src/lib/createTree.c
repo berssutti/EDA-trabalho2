@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../include/libgroup01.h"
 
 ///////Create ABP//////
 BinaryTree *createBinaryTree();
@@ -10,9 +11,12 @@ BinaryTree *loadTreeFromFile();
 BinaryTree createTree(BinaryTree *root) {
     
     root = createBinaryTree();
-    root = loadTreeFromFile("../testC.txt");
+    
+    root = loadTreeFromFile("./testC.txt");
 
-    return root;
+    printf("Chave da root: %d\n", root->info);
+
+    return *root;
 }
 
 BinaryTree *createBinaryTree() {
