@@ -20,20 +20,29 @@ int saveTree(BinaryTree *root, int is_left, int offset, int depth, char **s);
 void showTree(BinaryTree *root);
 ////////////////////////////////////////////////////////////////////
 // Essa parte é para calcular o fator de balanceamento
-int verifyBalancedTree(BinaryTree *root);
+void verifyBalancedTree(BinaryTree *root);
+void printFatBal(BinaryTree *root);
 ////////////////////////////////////////////////
 // Essa parte é a parte de desalocar a arvore binaria
 void freeBinaryTree(BinaryTree *root);
+void printInOrder(BinaryTree *root);
+
+
 
 int main() {
     BinaryTree *root;
     
     root = createBinaryTree();
-    root = loadTreeFromFile("../testC.txt");
+    root = loadTreeFromFile("../tests/testC.txt");
     
     showTree(root);
-
+    verifyBalancedTree(root);
+    printFatBal(root);
+    printf("\n");
+    printInOrder(root);
+    printf("\n");
     freeBinaryTree(root);
+
     return 0;
 }
 
@@ -46,6 +55,7 @@ BinaryTree *createBinaryTree() {
     }
     return root; 
 }
+
 BinaryTree *loadTreeFromFile(char *nameOfFile) {
     FILE *fp;
     int number;
@@ -186,20 +196,44 @@ void showTree(BinaryTree *root) {
 }
 ////////////////////////////////////////////////////////////////////
 // Essa parte é para calcular o fator de balanceamento
-int verifyBalancedTree(BinaryTree *root) {
+void verifyBalancedTree(BinaryTree *root) {
 
-    /* if((root != NULL && root->left == NULL && root->right == NULL) || root == NULL) {
-        return 1;
-    } */
-
+    // Problema!!! O return na condição onde o root é igual a NULL finaliza o ciclo, e portanto não é possivel calcular o fator de balanceamento
+    // de todos os nós.
+    if (root == NULL){
+        return;
+    }
     int hLeftTree = getHeight(root->left);
     int hRightTree = getHeight(root->right);
     int balanceFactor = hRightTree - hLeftTree;
-
     root->FatBal = balanceFactor;
+    printf("Fator Balanciamento: %d\n", root->FatBal);
 
-    return verifyBalancedTree(root->right) && verifyBalancedTree(root->left);
+    return verifyBalancedTree(root->left);
+    return verifyBalancedTree(root->right);
+   
 }
+
+void printFatBal(BinaryTree *root){
+    if(root == NULL)
+        return;
+    printf("FatBal:%d ", root->FatBal);
+    return printFatBal(root->left);
+
+    return printFatBal(root->right);
+}  
+
+void printInOrder(BinaryTree *root) {
+  if(root == NULL) {
+    return;
+  }
+  if(root != NULL) {
+    printInOrder(root->left);
+    printf(" %d ", root->info); // imprime o ultimo a esquerda, vai pra raiz imprime e vai pra direita e começa do ultimo a esquerda
+    printInOrder(root->right);
+  }
+}
+
 ////////////////////////////////////////////////////////////////////
 // Essa parte é a parte de desalocar a arvore binaria
 void freeBinaryTree(BinaryTree *node) {
