@@ -45,7 +45,7 @@ int main() {
         switch (opcao){
         case 1:
             raiz = criarArvoreBinaria();
-            raiz = lerArvoreArquivo("../tests/testA.txt");
+            raiz = lerArvoreArquivo("./tests/testA.txt");
             break;  
         case 2:
             verificarBalanco(raiz);
