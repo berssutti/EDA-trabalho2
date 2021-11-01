@@ -7,8 +7,6 @@
 int main(){
     int option;
     BinaryTree *root;
-    //char getFileLenght[20];
-   // char *fileName;
     do{
         printf("*** MENU ***\n"
         "1- Gerar ABP\n"

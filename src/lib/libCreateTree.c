@@ -2,246 +2,254 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct node {
-int info;
-struct node *left;
-struct node *right;
-int FatBal;
-} BinaryTree;
+typedef struct no {
+int chave;
+struct no *pEsq;
+struct no *pDir;
+int fatBal;
+} ArvoreBinaria;
 /////////////////////////////////////////////////
 // Essa parte é a de gerar a ABP
-BinaryTree *createBinaryTree();
-BinaryTree *insertBinaryTree(BinaryTree *root, int value);
-BinaryTree *loadTreeFromFile();
+ArvoreBinaria *criarArvoreBinaria();
+ArvoreBinaria *plantarArvoreBinaria(ArvoreBinaria *raiz, int valor);
+ArvoreBinaria *lerArvoreArquivo();
 /////////////////////////////////////////////////
-// Essa parte é a show tree
-int getHeight(BinaryTree *root);
-int saveTree(BinaryTree *root, int is_left, int offset, int depth, char **s);
-void showTree(BinaryTree *root);
+// Essa parte é a mostrar tree
+int getAltura(ArvoreBinaria *raiz);
+int salvarArvore(ArvoreBinaria *raiz, int is_pEsq, int deslocar, int profundidade, char **s);
+void mostrarArvore(ArvoreBinaria *raiz);
 ////////////////////////////////////////////////////////////////////
 // Essa parte é para calcular o fator de balanceamento
-void verifyBalancedTree(BinaryTree *root);
-void printFatBal(BinaryTree *root);
+void verificarBalanco(ArvoreBinaria *raiz);
+void printfatBal(ArvoreBinaria *raiz);
 ////////////////////////////////////////////////
 // Essa parte é a parte de desalocar a arvore binaria
-void freeBinaryTree(BinaryTree *root);
-void printInOrder(BinaryTree *root);
+void podarArvoreBinaria(ArvoreBinaria *raiz);
+void imprimiCrescente(ArvoreBinaria *raiz);
 
 
 
 int main() {
-    BinaryTree *root;
-    
-    root = createBinaryTree();
-    root = loadTreeFromFile("../tests/testC.txt");
-    
-    showTree(root);
-    verifyBalancedTree(root);
-    printFatBal(root);
-    printf("\n");
-    printInOrder(root);
-    printf("\n");
-    freeBinaryTree(root);
+
+    int opcao;
+    ArvoreBinaria *raiz;
+    do{
+        printf("*** MENU ***\n"
+        "1- Gerar ABP\n"
+        "2- Calcular Fator de Balanceamento\n"
+        "3- Imprimir ABP\n"
+        "4- Sair\n"
+        "O que deseja fazer:\n"
+        );
+        scanf("%d",&opcao);
+        switch (opcao){
+        case 1:
+            raiz = criarArvoreBinaria();
+            raiz = lerArvoreArquivo("../tests/testA.txt");
+            break;  
+        case 2:
+            verificarBalanco(raiz);
+            break;
+        case 3:
+            mostrarArvore(raiz);
+            imprimiCrescente(raiz);
+            break;
+        case 4:
+            podarArvoreBinaria(raiz);      
+            break;
+        default:
+            printf("Digite novamente!\n");
+            break;
+        }
+    }while(opcao != 4);
 
     return 0;
 }
 
-BinaryTree *createBinaryTree() {
-    BinaryTree *root;
-    root = (BinaryTree *) malloc(sizeof(BinaryTree));
+ArvoreBinaria *criarArvoreBinaria() {
+    ArvoreBinaria *raiz;
+    raiz = (ArvoreBinaria *) malloc(sizeof(ArvoreBinaria));
 
-    if(root != NULL) {
-        root = NULL;
+    if(raiz != NULL) {
+        raiz = NULL;
     }
-    return root; 
+    return raiz; 
 }
 
-BinaryTree *loadTreeFromFile(char *nameOfFile) {
+ArvoreBinaria *lerArvoreArquivo(char *nameOfFile) {
     FILE *fp;
-    int number;
+    int numero;
 
-    BinaryTree *root = createBinaryTree();
+    ArvoreBinaria *raiz = criarArvoreBinaria();
 
     fp = fopen(nameOfFile, "r");
 
     if (fp == NULL) {
-        printf("Was not found!\n");
+        printf("Nao foi encontrado!\n");
     }
 
     // Temos que encontrar um método para ler o txt com virgulas
     while(!feof(fp)) {
-        fscanf(fp, "%d", &number);
-        printf("%d\n", number);
-        root = insertBinaryTree(root, number);
+        fscanf(fp, "%d,", &numero);
+        raiz = plantarArvoreBinaria(raiz, numero);
     }
 
     fclose(fp);
 
-    return root;
+    return raiz;
 }
 
-BinaryTree *insertBinaryTree(BinaryTree *root, int value) {
-    BinaryTree *new;
-    new = (BinaryTree *) malloc(sizeof(BinaryTree));
-    if(new == NULL) { // confere a alocacao
+ArvoreBinaria *plantarArvoreBinaria(ArvoreBinaria *raiz, int valor) {
+    ArvoreBinaria *novo;
+    novo = (ArvoreBinaria *) malloc(sizeof(ArvoreBinaria));
+    if(novo == NULL) { // confere a alocacao
         exit(1);
     }
 
-    new->info = value;
-    new->right = NULL;
-    new->left = NULL;
+    novo->chave = valor;
+    novo->pDir = NULL;
+    novo->pEsq = NULL;
 
     // onde inserir:
-    if(root == NULL) {
-        root = new;
+    if(raiz == NULL) {
+        raiz = novo;
     }
     else {
-        BinaryTree *current = root;
-        BinaryTree *previous = NULL;
+        ArvoreBinaria *atual = raiz;
+        ArvoreBinaria *anterior = NULL;
 
-        while(current != NULL) { // quando tiver achado aonde ira ser inserido, para o while
-            previous = current; // salva o atual pois o atual se tornara um dos filhos
-            if(value == current->info) {
-                free(new);
+        while(atual != NULL) { // quando tiver achado aonde ira ser inserido, para o while
+            anterior = atual; // salva o atual pois o atual se tornara um dos filhos
+            if(valor == atual->chave) {
+                free(novo);
                 printf("Element already exists in the tree.\n");
                 exit(2);// elemento ja existe
             }
-            if(value > current->info) { // vai percorrer ate que um seja nulo e o anterior eh a folha que vai ficar em cima do elemento a ser inserido
-                current = current->right;
+            if(valor > atual->chave) { // vai percorrer ate que um seja nulo e o anterior eh a folha que vai ficar em cima do elemento a ser inserido
+                atual = atual->pDir;
             } else {
-                current = current->left;
+                atual = atual->pEsq;
             }
         }
         // ve se vai ser inserido na direita ou na esquerda da folha encontrada acima
-        if(value > previous->info) {
-        previous->right = new;
+        if(valor > anterior->chave) {
+        anterior->pDir = novo;
         } else {
-        previous->left = new;
+        anterior->pEsq = novo;
         }
     }
-    return root;
+    return raiz;
 }
 ///////////////////////////////////////
-// Essa parte é a show tree
-int getHeight(BinaryTree *root) {
-  if(root == NULL) {
+// Essa parte é a mostrar tree
+int getAltura(ArvoreBinaria *raiz) {
+  if(raiz == NULL) {
     return 0;
   }
-  int leftHeight = getHeight(root->left); // endereco do no da esquerda
-  int rightHeight = getHeight(root->right); // endereco do no da direita
-  if(leftHeight > rightHeight) {
-    return (leftHeight + 1);
+  int pEsqHeight = getAltura(raiz->pEsq); // endereco do no da esquerda
+  int pDirHeight = getAltura(raiz->pDir); // endereco do no da direita
+  if(pEsqHeight > pDirHeight) {
+    return (pEsqHeight + 1);
   } else {
-    return (rightHeight + 1);
+    return (pDirHeight + 1);
   }
 }
 
-int saveTree(BinaryTree *root, int is_left, int offset, int depth, char **s) {
+int salvarArvore(ArvoreBinaria *raiz, int is_pEsq, int deslocar, int profundidade, char **s) {
     char b[20];
-    int width = 5;
+    int largura = 5;
 
-    if (!root) return 0;
+    if (!raiz) return 0;
 
-    sprintf(b, " %3d ", root->info);
+    sprintf(b, " %3d ", raiz->chave);
 
-    int left  = saveTree(root->left,  1, offset, depth + 1, s);
-    int right = saveTree(root->right, 0, offset + left + width, depth + 1, s);
+    int pEsq  = salvarArvore(raiz->pEsq,  1, deslocar, profundidade + 1, s);
+    int pDir = salvarArvore(raiz->pDir, 0, deslocar + pEsq + largura, profundidade + 1, s);
 
-    for (int i = 0; i < width; i++)
-        s[2 * depth][offset + left + i] = b[i];
+    for (int i = 0; i < largura; i++)
+        s[2 * profundidade][deslocar + pEsq + i] = b[i];
 
-    if (depth && is_left) {
+    if (profundidade && is_pEsq) {
 
-        for (int i = 0; i < width + right; i++)
-            s[2 * depth - 1][offset + left + width/2 + i] = '*';
+        for (int i = 0; i < largura + pDir; i++)
+            s[2 * profundidade - 1][deslocar + pEsq + largura/2 + i] = '*';
 
-        s[2 * depth - 1][offset + left + width/2] = '/';
-        s[2 * depth - 1][offset + left + width + right + width/2] = ':';
+        s[2 * profundidade - 1][deslocar + pEsq + largura/2] = '/';
+        s[2 * profundidade - 1][deslocar + pEsq + largura + pDir + largura/2] = ':';
 
-    } else if (depth && !is_left) {
+    } else if (profundidade && !is_pEsq) {
 
-        for (int i = 0; i < left + width; i++)
-            s[2 * depth - 1][offset - width/2 + i] = '*';
+        for (int i = 0; i < pEsq + largura; i++)
+            s[2 * profundidade - 1][deslocar - largura/2 + i] = '*';
 
-        s[2 * depth - 1][offset + left + width/2] = 92;
-        s[2 * depth - 1][offset - width/2 - 1] = ':';
+        s[2 * profundidade - 1][deslocar + pEsq + largura/2] = 92;
+        s[2 * profundidade - 1][deslocar - largura/2 - 1] = ':';
     }
 
-    return left + width + right;
+    return pEsq + largura + pDir;
 }
 
-void showTree(BinaryTree *root) {
-  int height = getHeight(root);
+void mostrarArvore(ArvoreBinaria *raiz) {
+  int height = getAltura(raiz);
   int tam = ((height * 2) + 1);
 
-  char **show = (char **)malloc( tam * sizeof(char *));
+  char **mostrar = (char **)malloc( tam * sizeof(char *));
 	for (int i = 0; i < tam; i++) {
-		show[i] = (char *)malloc(255 * sizeof(char));
-		sprintf(show[i], "%80s", " ");
+		mostrar[i] = (char *)malloc(255 * sizeof(char));
+		sprintf(mostrar[i], "%80s", " ");
 	}
 
-	saveTree(root, 0, 0, 0, show);
+	salvarArvore(raiz, 0, 0, 0, mostrar);
 
 	for (int i = 0; i < tam; i++) {
-    int tamStr = strlen(show[i]);
+    int tamStr = strlen(mostrar[i]);
     for(int j = 0; j < tamStr; j++){
-        printf("%c", show[i][j]);
+        printf("%c", mostrar[i][j]);
     }
     printf("\n");
   }
 
     for (int i = 0; i < tam; i++)
-        free(show[i]);
-    free(show);
+        free(mostrar[i]);
+    free(mostrar);
 }
 ////////////////////////////////////////////////////////////////////
 // Essa parte é para calcular o fator de balanceamento
-void verifyBalancedTree(BinaryTree *root) {
+void verificarBalanco(ArvoreBinaria *raiz) {
 
-    // Problema!!! O return na condição onde o root é igual a NULL finaliza o ciclo, e portanto não é possivel calcular o fator de balanceamento
-    // de todos os nós.
-    if (root == NULL){
+    if(raiz == NULL) {
         return;
-    }
-    int hLeftTree = getHeight(root->left);
-    int hRightTree = getHeight(root->right);
-    int balanceFactor = hRightTree - hLeftTree;
-    root->FatBal = balanceFactor;
-    printf("Fator Balanciamento: %d\n", root->FatBal);
+    }         
+    if(raiz != NULL){
+        int hpEsqArvore = getAltura(raiz->pEsq);
+        int hpDirArvore = getAltura(raiz->pDir);
+        int balancoFator = hpDirArvore - hpEsqArvore;
+        raiz->fatBal = balancoFator;
 
-    return verifyBalancedTree(root->left);
-    return verifyBalancedTree(root->right);
-   
+        verificarBalanco(raiz->pDir);   
+        verificarBalanco(raiz->pEsq);
+    }
 }
 
-void printFatBal(BinaryTree *root){
-    if(root == NULL)
-        return;
-    printf("FatBal:%d ", root->FatBal);
-    return printFatBal(root->left);
-
-    return printFatBal(root->right);
-}  
-
-void printInOrder(BinaryTree *root) {
-  if(root == NULL) {
+void imprimiCrescente(ArvoreBinaria *raiz) {
+  if(raiz == NULL) {
     return;
   }
-  if(root != NULL) {
-    printInOrder(root->left);
-    printf(" %d ", root->info); // imprime o ultimo a esquerda, vai pra raiz imprime e vai pra direita e começa do ultimo a esquerda
-    printInOrder(root->right);
+  if(raiz != NULL) {
+    imprimiCrescente(raiz->pEsq);
+    printf("chave: %d || fatBal: %d\n ", raiz->chave, raiz->fatBal); // imprime o ultimo a esquerda, vai pra raiz imprime e vai pra direita e começa do ultimo a esquerda
+    imprimiCrescente(raiz->pDir);
   }
 }
 
 ////////////////////////////////////////////////////////////////////
 // Essa parte é a parte de desalocar a arvore binaria
-void freeBinaryTree(BinaryTree *node) {
-  if(node == NULL) { // verifica se a alocacao deu certo
+void podarArvoreBinaria(ArvoreBinaria *no) {
+  if(no == NULL) { // verifica se a alocacao deu certo
     return;
   }
-  freeBinaryTree(node->left); // vai a esquerda e libera
-  freeBinaryTree(node->right); // vai a direita e libera
-  free(node); // libera o node apos liberar tudo a direita e a esquerda
-  node = NULL;
+  podarArvoreBinaria(no->pEsq); // vai a esquerda e libera
+  podarArvoreBinaria(no->pDir); // vai a direita e libera
+  free(no); // libera o no apos liberar tudo a direita e a esquerda
+  no = NULL;
 }
