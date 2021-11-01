@@ -25,8 +25,8 @@
 [Linux](https://github.com/jpaulohe4rt/c4noobs/blob/master/src/2-Ambiente/3-Ambiente-linux.md)
 
 ## Autores
-- **João Paulo Lima da Silva**
-- **Maurício Machado Fernandes Filho**
-- **Samuel Furtado Avila** 
-- **Iago Oliveira Monteiro Ribeiro**
-- **Bernado Chaves Pissutti**
+- **João Paulo Lima da Silva 190030755**
+- **Maurício Machado Fernandes Filho 200041959**
+- **Samuel Furtado Avila 190037806** 
+- **Iago Oliveira Monteiro Ribeiro 160124735**
+- **Bernado Chaves Pissutti 190103302**
