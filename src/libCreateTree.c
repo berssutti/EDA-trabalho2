@@ -55,7 +55,7 @@ int main() {
             imprimiCrescente(raiz);
             break;
         case 4:
-            podarArvoreBinaria(raiz);      
+            podarArvoreBinaria(raiz);   
             break;
         default:
             printf("Digite novamente!\n");
@@ -237,7 +237,7 @@ void imprimiCrescente(ArvoreBinaria *raiz) {
   }
   if(raiz != NULL) {
     imprimiCrescente(raiz->pEsq);
-    printf("chave: %d || fatBal: %d\n ", raiz->chave, raiz->fatBal); // imprime o ultimo a esquerda, vai pra raiz imprime e vai pra direita e começa do ultimo a esquerda
+    printf("chave: %d || fatBal: %d\n", raiz->chave, raiz->fatBal); // imprime o ultimo a esquerda, vai pra raiz imprime e vai pra direita e começa do ultimo a esquerda
     imprimiCrescente(raiz->pDir);
   }
 }
@@ -245,7 +245,7 @@ void imprimiCrescente(ArvoreBinaria *raiz) {
 ////////////////////////////////////////////////////////////////////
 // Essa parte é a parte de desalocar a arvore binaria
 void podarArvoreBinaria(ArvoreBinaria *no) {
-  if(no == NULL) { // verifica se a alocacao deu certo
+  if(no == NULL) { // verifica se a alocacao deu certo   
     return;
   }
   podarArvoreBinaria(no->pEsq); // vai a esquerda e libera
