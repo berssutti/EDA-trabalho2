@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+//PARA DEFINIIR O ARQUIVO DE LEITURA
+//VÁ NA LINHA 51
+
 typedef struct no {
 int chave;
 struct no *pEsq;
