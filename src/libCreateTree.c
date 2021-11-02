@@ -122,8 +122,7 @@ ArvoreBinaria *plantarArvoreBinaria(ArvoreBinaria *raiz, int valor) {
             anterior = atual; // salva o atual pois o atual se tornara um dos filhos
             if(valor == atual->chave) {
                 free(novo);
-                printf("Element already exists in the tree.\n");
-                exit(2);// elemento ja existe
+                return raiz;
             }
             if(valor > atual->chave) { // vai percorrer ate que um seja nulo e o anterior eh a folha que vai ficar em cima do elemento a ser inserido
                 atual = atual->pDir;
