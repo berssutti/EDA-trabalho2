@@ -1,4 +1,4 @@
-# Grupo01_TP2_EDA
+# Grupo 01-TP2-EDA
 
 ## Como criar uma branch e fazer um Pull Request
 
